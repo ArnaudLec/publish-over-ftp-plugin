@@ -77,7 +77,7 @@ public class BapFtpHostConfiguration extends BPHostConfiguration<BapFtpClient, O
     private boolean useFtpOverTls;
     private boolean useImplicitTls;
     private String trustedCertificate;
-    private Proxy proxy = null;
+    private Proxy proxy;
 
     @DataBoundConstructor
     public BapFtpHostConfiguration(final String name, final String hostname, final String username, final String encryptedPassword,
@@ -143,7 +143,6 @@ public class BapFtpHostConfiguration extends BPHostConfiguration<BapFtpClient, O
         this.trustedCertificate = Util.fixEmptyAndTrim(trustedCertificate);
     }
     
-    @DataBoundSetter
     public void setProxyUrl(String proxyUrl) {
       this.proxy = getProxyFromUrl(proxyUrl);
     }

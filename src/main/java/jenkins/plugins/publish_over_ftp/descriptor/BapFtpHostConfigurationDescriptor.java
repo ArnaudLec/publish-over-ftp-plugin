@@ -39,6 +39,8 @@ import org.kohsuke.stapler.StaplerResponse;
 @Extension
 public class BapFtpHostConfigurationDescriptor extends Descriptor<BapFtpHostConfiguration> {
 
+    private static final String NO_PROXY_URL = "";
+
     public BapFtpHostConfigurationDescriptor() {
         super(BapFtpHostConfiguration.class);
     }
@@ -54,6 +56,10 @@ public class BapFtpHostConfigurationDescriptor extends Descriptor<BapFtpHostConf
 
     public int getDefaultTimeout() {
         return BapFtpHostConfiguration.DEFAULT_TIMEOUT;
+    }
+    
+    public String getDefaultProxyUrl() {
+      return NO_PROXY_URL;
     }
 
     public FormValidation doCheckName(@QueryParameter final String value) {
