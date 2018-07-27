@@ -34,6 +34,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.Proxy.Type;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.cert.CertificateFactory;
@@ -74,17 +77,55 @@ public class BapFtpHostConfiguration extends BPHostConfiguration<BapFtpClient, O
     private boolean useFtpOverTls;
     private boolean useImplicitTls;
     private String trustedCertificate;
+    private Proxy proxy = null;
 
     @DataBoundConstructor
     public BapFtpHostConfiguration(final String name, final String hostname, final String username, final String encryptedPassword,
-                                   final String remoteRootDir, final int port, final int timeout, final boolean useActiveData,
-                                   final String controlEncoding, final boolean disableMakeNestedDirs, final boolean disableRemoteVerification) {
+                                   final String proxyUrl, final String remoteRootDir, final int port, final int timeout,
+                                   final boolean useActiveData, final String controlEncoding, final boolean disableMakeNestedDirs,
+                                   final boolean disableRemoteVerification) {
         super(name, hostname, username, encryptedPassword, remoteRootDir, port);
         this.timeout = timeout;
         this.useActiveData = useActiveData;
         this.controlEncoding = Util.fixEmptyAndTrim(controlEncoding);
         this.disableMakeNestedDirs = disableMakeNestedDirs;
         this.disableRemoteVerification = disableRemoteVerification;
+        proxy = getProxyFromUrl(proxyUrl);
+    }
+
+    private static Proxy getProxyFromUrl(String proxyUrl)
+    {
+      if(proxyUrl == null || proxyUrl.length() == 0) {
+        return null;
+      }
+      String hostnameAndPort = proxyUrl; 
+      String[] parts = proxyUrl.split("://");
+      // defaults to HTTP
+      Type proxyType = Type.HTTP;
+      if(parts.length > 1) {
+        String scheme = parts[0];
+        if("http".equalsIgnoreCase(scheme) || "https://".equalsIgnoreCase(scheme)) {
+          proxyType = Type.HTTP;
+        }
+        else if("socks".equalsIgnoreCase(scheme)) {
+          proxyType = Type.SOCKS;
+        }
+        hostnameAndPort = parts[1];
+      }
+
+      String proxyHost = hostnameAndPort;
+      int proxyPort;
+      parts = hostnameAndPort.split(":");
+      if(parts.length > 1) {
+        proxyHost = parts[0];
+        proxyPort = Integer.parseInt(parts[1]);
+      }
+      else {
+        // port defaults to 8080
+        proxyPort = 8080;
+      }
+      
+      return new Proxy(proxyType, InetSocketAddress.createUnresolved(proxyHost, proxyPort));
     }
 
     @DataBoundSetter
@@ -100,6 +141,11 @@ public class BapFtpHostConfiguration extends BPHostConfiguration<BapFtpClient, O
     @DataBoundSetter
     public void setTrustedCertificate(final String trustedCertificate) {
         this.trustedCertificate = Util.fixEmptyAndTrim(trustedCertificate);
+    }
+    
+    @DataBoundSetter
+    public void setProxyUrl(String proxyUrl) {
+      this.proxy = getProxyFromUrl(proxyUrl);
     }
 
     @Override
@@ -175,7 +221,11 @@ public class BapFtpHostConfiguration extends BPHostConfiguration<BapFtpClient, O
 
             return c;
         }
-        return new FTPClient();
+        FTPClient client = new FTPClient();
+        if(this.proxy != null) {
+          client.setProxy(this.proxy);
+        }
+        return client;
     }
 
     private void init(final BapFtpClient client) throws IOException {

@@ -174,10 +174,11 @@ public class BapHostConfigurationTest extends HudsonTestCase {
         private static final String TEST_HOSTNAME = "my.test.hostname";
         private static final String TEST_USERNAME = "myTestUsername";
         private static final String TEST_PASSWORD = "myTestPassword";
+        private static final String TEST_PROXY = null;
         private final transient FTPClient ftpClient;
 
         BapFtpHostConfigurationWithMockFTPClient(final FTPClient ftpClient, final boolean disableMakeNestedDirs) {
-            super(TEST_CFG_NAME, TEST_HOSTNAME, TEST_USERNAME, TEST_PASSWORD, "", DEFAULT_PORT, DEFAULT_TIMEOUT, false, null, disableMakeNestedDirs, false);
+            super(TEST_CFG_NAME, TEST_HOSTNAME, TEST_USERNAME, TEST_PASSWORD, TEST_PROXY, "", DEFAULT_PORT, DEFAULT_TIMEOUT, false, null, disableMakeNestedDirs, false);
             this.ftpClient = ftpClient;
         }
 

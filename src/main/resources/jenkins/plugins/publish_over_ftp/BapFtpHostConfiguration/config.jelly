@@ -37,6 +37,9 @@
           <f:entry title="${m.username()}" field="username">
             <f:textbox/>
           </f:entry>
+          <f:entry title="${m.proxyUrl()}" field="proxyUrl">
+            <f:textbox/>
+          </f:entry>
           <f:entry title="${m.password()}" field="encryptedPassword">
             <f:password/>
           </f:entry>
@@ -73,6 +76,6 @@
             </f:entry>
           </f:advanced>
           <f:validateButton title="${m.test_title()}" progress="${m.test_progress()}" method="testConnection"
-                            with="name,hostname,username,encryptedPassword,remoteRootDir,port,timeout,useActiveData,controlEncoding,disableRemoteVerification,useFtpOverTls,useImplicitTls,trustedCertificate"/>
+                            with="name,hostname,username,proxyUrl,encryptedPassword,remoteRootDir,port,timeout,useActiveData,controlEncoding,disableRemoteVerification,useFtpOverTls,useImplicitTls,trustedCertificate"/>
 
 </j:jelly>
