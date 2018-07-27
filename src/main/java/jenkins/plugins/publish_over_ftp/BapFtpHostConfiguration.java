@@ -77,7 +77,7 @@ public class BapFtpHostConfiguration extends BPHostConfiguration<BapFtpClient, O
     private boolean useFtpOverTls;
     private boolean useImplicitTls;
     private String trustedCertificate;
-    private Proxy proxy;
+    private String proxyUrl;
 
     @DataBoundConstructor
     public BapFtpHostConfiguration(final String name, final String hostname, final String username, final String encryptedPassword,
@@ -90,7 +90,7 @@ public class BapFtpHostConfiguration extends BPHostConfiguration<BapFtpClient, O
         this.controlEncoding = Util.fixEmptyAndTrim(controlEncoding);
         this.disableMakeNestedDirs = disableMakeNestedDirs;
         this.disableRemoteVerification = disableRemoteVerification;
-        proxy = getProxyFromUrl(proxyUrl);
+        this.proxyUrl = proxyUrl;
     }
 
     private static Proxy getProxyFromUrl(String proxyUrl)
@@ -143,8 +143,12 @@ public class BapFtpHostConfiguration extends BPHostConfiguration<BapFtpClient, O
         this.trustedCertificate = Util.fixEmptyAndTrim(trustedCertificate);
     }
     
+    public String getProxyUrl() {
+      return this.proxyUrl;
+    }
+    
     public void setProxyUrl(String proxyUrl) {
-      this.proxy = getProxyFromUrl(proxyUrl);
+      this.proxyUrl = proxyUrl;
     }
 
     @Override
@@ -221,8 +225,8 @@ public class BapFtpHostConfiguration extends BPHostConfiguration<BapFtpClient, O
             return c;
         }
         FTPClient client = new FTPClient();
-        if(this.proxy != null) {
-          client.setProxy(this.proxy);
+        if(this.proxyUrl != null && this.proxyUrl.length() > 0) {
+          client.setProxy(getProxyFromUrl(this.proxyUrl));
         }
         return client;
     }
