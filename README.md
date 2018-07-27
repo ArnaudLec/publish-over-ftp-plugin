@@ -1,4 +1,4 @@
 publish-over-ftp-plugin
 =======================
-Includes fixes from afischer211 for Jenkins-17165
+Fork from official publish-over-ftp plugin to add proxy handling
 
