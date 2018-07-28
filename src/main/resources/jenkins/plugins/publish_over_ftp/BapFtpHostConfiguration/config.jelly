@@ -37,11 +37,11 @@
           <f:entry title="${m.username()}" field="username">
             <f:textbox/>
           </f:entry>
-          <f:entry title="${m.proxyUrl()}" field="proxyUrl">
-            <f:textbox/>
-          </f:entry>
           <f:entry title="${m.password()}" field="encryptedPassword">
             <f:password/>
+          </f:entry>
+          <f:entry title="${m.proxyUrl()}" field="proxyUrl">
+            <f:textbox/>
           </f:entry>
           <f:entry title="${m.remotePath()}" field="remoteRootDir">
             <f:textbox/>
